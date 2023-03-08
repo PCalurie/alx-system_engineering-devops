@@ -1,0 +1,2 @@
+#!bin/bash
+ls -1Ap | awk '{printf "%s%s", $0, (NR%3==0 ? "\n" : ",")}'
