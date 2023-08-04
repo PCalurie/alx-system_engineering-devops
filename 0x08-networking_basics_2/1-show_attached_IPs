@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# This script dislays all active IPV4 IPs
+# the IPs could be different depending on the machine
+
+ifconfig | grep 'inet ' | awk '{print $2}'
