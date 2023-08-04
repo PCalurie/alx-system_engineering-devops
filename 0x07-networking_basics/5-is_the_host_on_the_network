@@ -3,7 +3,7 @@
 # Accepts a string as an argument and pings the IP address
 # Displays Usage: 5-is_the_host_on_the_network {IP_ADDRESS} if no argumen was passed
 
-if [ "$#" -eq 0 ];
+if [ "$#" == "" ];
 then
 	echo "Usage: 5-is_the_host_on_the_network {IP_ADDRESS}"
 else
