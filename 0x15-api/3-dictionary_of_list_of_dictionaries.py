@@ -1,31 +1,30 @@
 #!/usr/bin/python3
-"""
-extend your Python script to export data in the JSON file format
-"""
+"""Exports todo list information of all employees to JSON format."""
 
+# Import the json module to work with JSON files
 import json
+# Import the requests module to make HTTP requests
 import requests
 
-if __name__ == '__main__':
-    users = requests.get("http://jsonplaceholder.typicode.com/users",
-                         verify=False).json()
-    userdict = {}
-    usernamedict = {}
-    for user in users:
-        uid = user.get("id")
-        userdict[uid] = []
-        usernamedict[uid] = user.get("username")
-    todo = requests.get("http://jsonplaceholder.typicode.com/todos",
-                        verify=False).json()
+if __name__ == "__main__":
+    # Define the base URL of the web API
+    url = "https://jsonplaceholder.typicode.com/"
+    # Get the user data as a JSON object
+    users = requests.get(url + "users").json()
 
-    for task in todo:
-        taskdict = {
-            "task": task.get('title'),
-            "completed": task.get('completed'),
-            "username": usernamedict.get(uid)
-        }
-        uid = task.get("userId")
-
-        userdict.get(uid).append(taskdict)
-    with open("todo_all_employees.json", 'w') as jsonfile:
-        json.dump(userdict, jsonfile)
+    # Open a JSON file with the name "todo_all_employees.json", in write mode
+    with open("todo_all_employees.json", "w") as jsonfile:
+        # Dump the to-do list data of all employees
+        # as a JSON object to the file
+        json.dump({
+            # For each user, get their ID, username, and to-do list data
+            u.get("id"): [{
+                # Each to-do item has the task, completion status,
+                # and username fields
+                "task": t.get("title"),
+                "completed": t.get("completed"),
+                "username": u.get("username")
+            } for t in requests.get(url + "todos",
+                                    # Filter the to-do list data by user ID
+                                    params={"userId": u.get("id")}).json()]
+            for u in users}, jsonfile)
